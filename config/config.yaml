@@ -1,0 +1,68 @@
+# AI Dynamic Pricing & Demand Intelligence Engine
+# Configuration File
+
+# Azure Configuration
+azure:
+  storage:
+    account_name: ${AZURE_STORAGE_ACCOUNT}
+    account_key: ${AZURE_STORAGE_KEY}
+    container_name: pricing-engine-data
+  databricks:
+    host: ${DATABRICKS_HOST}
+    token: ${DATABRICKS_TOKEN}
+    cluster_id: ${DATABRICKS_CLUSTER_ID}
+  openai:
+    api_key: ${AZURE_OPENAI_KEY}
+    endpoint: ${AZURE_OPENAI_ENDPOINT}
+    api_version: 2023-05-15
+    deployment_name: gpt-4
+
+# Data Processing
+data:
+  raw_path: pricing-engine-data/raw
+  processed_path: pricing-engine-data/processed
+  delta_path: pricing-engine-data/delta
+  sampling_fraction: 1.0  # 1.0 for full data, <1 for sampling
+  partition_cols: ['year', 'month']
+
+# Forecasting Configuration (Prophet)
+forecasting:
+  method: prophet
+  forecast_horizon: 30  # days
+  seasonality_mode: additive
+  seasonality_period: 365  # annual seasonality
+  interval_width: 0.95
+  min_data_points: 90  # minimum historical data for training
+
+# Price Elasticity Model
+elasticity:
+  method: regression  # linear or nonlinear regression
+  min_price_variations: 10  # minimum price points needed
+  confidence_threshold: 0.7  # R-squared threshold
+
+# Pricing Recommendations
+pricing:
+  max_discount_pct: 20  # maximum allowed discount
+  min_margin_pct: 15  # minimum profit margin required
+  recommendation_confidence_threshold: 0.75
+  simulation_horizons: [7, 14, 30]  # days to simulate impact
+
+# Streamlit UI
+ui:
+  page_title: "AI Pricing Engine"
+  layout: wide
+  theme: light
+  debug: false
+
+# LangChain Agent Configuration
+agent:
+  temperature: 0.3
+  max_tokens: 2000
+  verbose: true
+  agent_type: openai-functions  # tool-calling agent
+
+# Logging
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: logs/pricing_engine.log
